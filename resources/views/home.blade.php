@@ -55,12 +55,12 @@
                         <label for="container_input_colors">COLORS:</label>
                         <br>
                         <div id="container_input_colors_upper" class="flex flex-row min-h-min min-w-min">
-                            <input id="container_input_colors_upper_color" type="color" name="colorUpper" @@change="myColor1($event)" value="" />
-                            <input id="container_input_colors_upper_text" type="text" name="colorUpperText" :value="container_input_colors_upper_text" class="button-2" ref="color1"/>
+                            <input id="container_input_colors_upper_color" type="color" name="colorUpper" @@change="myColor1($event)" :value="color1v" />
+                            <input id="container_input_colors_upper_text" type="text" name="colorUpperText" value="" class="button-2" ref="color1"/>
                         </div>
                         <div id="container_input_colors_lower" class="flex flex-row min-h-min min-w-min">
-                            <input id="container_input_colors_lower_color" type="color" name="colorLower" @@change="myColor2($event)" value="" />
-                            <input id="container_input_colors_lower_text" type="text" name="colorLowerText" :value="container_input_colors_lower_text" class="button-2" ref="color2"/>
+                            <input id="container_input_colors_lower_color" type="color" name="colorLower" @@change="myColor2($event)" :value="color2v" />
+                            <input id="container_input_colors_lower_text" type="text" name="colorLowerText" value="" class="button-2" ref="color2"/>
                         </div>
                     </span>
                 </div>
@@ -68,8 +68,8 @@
                     <span class=" buttons font-sans font-medium text-slate-100">
                         <label for="container_input_format">COLOR FORMAT:</label>
                         <br>
-                        <a id="hex" class=" button-1">Hex</a>
-                        <a id="rgb" class=" button-1">Rgb</a>
+                        <a id="hex" class=" button-1" @@click="rgbToHex" >Hex</a>
+                        <a id="rgb" class=" button-1" @@click="hexToRgb" >Rgb</a>
                     </span>
                 </div>
             </div>
@@ -89,7 +89,10 @@
         </div>
     </div>
 
-    <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ asset('js/app.js') }}">
+    
+
+    </script>
 </body>
 
 </html>

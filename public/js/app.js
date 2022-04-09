@@ -5292,7 +5292,8 @@ __webpack_require__.r(__webpack_exports__);
  * building robust, powerful web applications using Vue and Laravel.
  */
 var _require = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js"),
-    method = _require.method;
+    method = _require.method,
+    split = _require.split;
 
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
@@ -5309,6 +5310,32 @@ var app = new Vue({
     },
     myColor2: function myColor2(e) {
       this.$refs.color2.value = e.target.value;
+    },
+    hexToRgb: function hexToRgb() {
+      if (this.$refs.color1.value[0] !== '#' || this.$refs.color2.value[0] !== '#') {
+        return;
+      } else {
+        this.$refs.color1.value = ['0x' + this.$refs.color1.value[1] + this.$refs.color1.value[2] | 0, '0x' + this.$refs.color1.value[3] + this.$refs.color1.value[4] | 0, '0x' + this.$refs.color1.value[5] + this.$refs.color1.value[6] | 0];
+        this.$refs.color2.value = ['0x' + this.$refs.color2.value[1] + this.$refs.color2.value[2] | 0, '0x' + this.$refs.color2.value[3] + this.$refs.color2.value[4] | 0, '0x' + this.$refs.color2.value[5] + this.$refs.color2.value[6] | 0];
+      }
+    },
+    rgbToHex: function rgbToHex() {
+      if (this.$refs.color1.value[0] == '#' || this.$refs.color2.value[0] == '#') {
+        return;
+      } else {
+        colors1 = this.$refs.color1.value.split(",");
+        red1 = colors1[0];
+        green1 = colors1[1];
+        blue1 = colors1[2];
+        var rgb1 = red1 << 16 | green1 << 8 | blue1 << 0;
+        this.$refs.color1.value = '#' + (0x1000000 + rgb1).toString(16).slice(1);
+        colors2 = this.$refs.color2.value.split(",");
+        red2 = colors2[0];
+        green2 = colors2[1];
+        blue2 = colors2[2];
+        var rgb2 = red2 << 16 | green2 << 8 | blue2 << 0;
+        this.$refs.color2.value = '#' + (0x1000000 + rgb2).toString(16).slice(1);
+      }
     }
   }
 });
