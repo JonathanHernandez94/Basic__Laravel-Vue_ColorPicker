@@ -9,13 +9,16 @@ class GradientController extends Controller
 {
     public function show(Gradient $gradient)
     {
-        $gradients = Gradient::paginate(3);
+        $gradients = Gradient::orderBy('created_at', 'desc')->paginate(3);
         return view('home', compact('gradients'));
     }
 
     public function store(Request $request)
-    {
+    {   
         $title = $request->title;
+        if (Gradient::all()->find($title) ) {
+            return redirect('/')->withErrors(['errorMsg' => 'Gradient already exist:   '. $title ]);
+        }
         if (strpos($title, " radial-gradient(") !== false) {
             $style = substr($title, strpos($title, ': ') + 2, strpos($title, '(') - strpos($title, ': ') - 2);
             $attrsU = substr($title, strpos($title, '(') + 1, strpos($title, ')') - strpos($title, ')') - 1);

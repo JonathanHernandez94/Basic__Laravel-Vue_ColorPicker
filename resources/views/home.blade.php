@@ -70,13 +70,13 @@
                             <br>
                             <div id="container_input_colors_upper" class="flex flex-row min-h-min min-w-min">
                                 <input id="container_input_colors_upper_color" type="color" name="colorUpper"
-                                    @@change="myColor1($event)" value="#00fbff" />
+                                    @@mouseover="addEvents1($event)" value="#00fbff" />
                                 <input id="container_input_colors_upper_text" type="text" name="colorUpperText"
                                     value="#05f1f5" class="button-2" ref="color1" />
                             </div>
                             <div id="container_input_colors_lower" class="flex flex-row min-h-min min-w-min">
                                 <input id="container_input_colors_lower_color" type="color" name="colorLower"
-                                    @@change="myColor2($event)" value="#e1ffe0" />
+                                    @@mouseover="addEvents2($event)" value="#e1ffe0" />
                                 <input id="container_input_colors_lower_text" type="text" name="colorLowerText"
                                     value="#e2fee1" class="button-2" ref="color2" />
                             </div>
@@ -93,8 +93,7 @@
                 </div>
                 <div id="container_right"
                     class=" relative h-3/4 w-7/12 float-right bg-neutral-800 flex flex-col min-h-min min-w-min ">
-                    <div id='container_righ_screen flex flex-col min-h-min min-w-min'
-                        class="rounded relative float-right mx-1 h-2/3 w-11/12" ref="screen"
+                    <div id="container_righ_screen" class="rounded relative float-right mx-1 h-2/3 w-11/12" ref="screen"
                         style="background-image: linear-gradient(to bottom,#05f1f5,#e2fee1)">
                     </div>
                     <div id="container_right_output"
@@ -107,8 +106,12 @@
                     <div id="container_right_save"
                         class=" bg-neutral-800 relative float-right mx-1 h-1/3 w-11/12 flex flex-col min-h-min min-w-min">
                         <input type="submit" class=" button-3" value="SAVE" />
+                        @if ($errors->any())
+                            <h2 class="font-sans font-normal text-lg text-red-600">{{ $errors->first() }}</h2>
+                        @endif
                     </div>
-                    <div id="msg" class="bg-neutral-800 relative float-right mx-1 h-1/12 w-11/12 flex flex-col min-h-min min-w-min">
+                    <div id="msg"
+                        class="bg-neutral-800 relative float-right mx-1 h-1/12 w-11/12 flex flex-col min-h-min min-w-min">
                         <h2 class="font-sans font-normal text-sm text-slate-200 font">Saved Gradients :</h2>
                     </div>
                     <div id="container_right_show"
