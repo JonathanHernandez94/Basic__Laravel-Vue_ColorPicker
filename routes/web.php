@@ -15,5 +15,5 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::view('/', 'home');
-Route::get('/gradients/{id}', [GradientController::class, 'show'])->name('gradient.show');
+Route::get('/', [GradientController::class, 'show'])->name('gradient.show');
 Route::post('/gradients', [GradientController::class, 'store'])->name('gradient.store');

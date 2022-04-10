@@ -49,8 +49,8 @@
                                     type="button">Right</button>
                                 <button id="bottomRight" class=" button-1 m-1 " @@click="renderDir($event)"
                                     type="button">Bottom right</button>
-                                <button id="center" class="button-1 m-1" @@click="renderDir($event)"
-                                    type="button" style="display: none">Center</button>
+                                <button id="center" class="button-1 m-1" @@click="renderDir($event)" type="button"
+                                    style="display: none">Center</button>
                             </div>
                             <div id="container_input_direction_lower" class="  ">
                                 <button id="bottom" class=" button-1 m-1 selected" @@click="renderDir($event)"
@@ -71,14 +71,14 @@
                             <div id="container_input_colors_upper" class="flex flex-row min-h-min min-w-min">
                                 <input id="container_input_colors_upper_color" type="color" name="colorUpper"
                                     @@change="myColor1($event)" value="#00fbff" />
-                                <input id="container_input_colors_upper_text" type="text" name="colorUpperText" value="#05f1f5"
-                                    class="button-2" ref="color1" />
+                                <input id="container_input_colors_upper_text" type="text" name="colorUpperText"
+                                    value="#05f1f5" class="button-2" ref="color1" />
                             </div>
                             <div id="container_input_colors_lower" class="flex flex-row min-h-min min-w-min">
                                 <input id="container_input_colors_lower_color" type="color" name="colorLower"
                                     @@change="myColor2($event)" value="#e1ffe0" />
-                                <input id="container_input_colors_lower_text" type="text" name="colorLowerText" value="#e2fee1"
-                                    class="button-2" ref="color2" />
+                                <input id="container_input_colors_lower_text" type="text" name="colorLowerText"
+                                    value="#e2fee1" class="button-2" ref="color2" />
                             </div>
                         </span>
                     </div>
@@ -91,18 +91,37 @@
                         </span>
                     </div>
                 </div>
-                <div id="conatiner_right"
+                <div id="container_right"
                     class=" relative h-3/4 w-7/12 float-right bg-neutral-800 flex flex-col min-h-min min-w-min ">
                     <div id='container_righ_screen flex flex-col min-h-min min-w-min'
                         class="rounded relative float-right mx-1 h-2/3 w-11/12" ref="screen"
                         style="background-image: linear-gradient(to bottom,#05f1f5,#e2fee1)">
                     </div>
-                    <div id="conatainer_righ_output"
-                        class=" bg-neutral-800 relative float-right mx-1 h-2/3 w-11/12 flex flex-col min-h-min min-w-min">
-                        <input id="container_right_output_input" type="text" value="background-image: linear-gradient(to bottom,#05f1f5,#e2fee1)"
+                    <div id="container_right_output"
+                        class=" bg-neutral-800 relative float-right mx-1 h-1/3 w-11/12 flex flex-col min-h-min min-w-min">
+                        <input id="container_right_output_input" type="text"
+                            value="background-image: linear-gradient(to bottom,#05f1f5,#e2fee1)"
                             class=" rounded w-full h-1/5 my-3 relative p-3 buttons font-sans font-medium text-slate-100 bg-transparent border-2 border-slate-100"
                             name="title" ref="code" />
                     </div>
+                    <div id="container_right_save"
+                        class=" bg-neutral-800 relative float-right mx-1 h-1/3 w-11/12 flex flex-col min-h-min min-w-min">
+                        <input type="submit" class=" button-3" value="SAVE" />
+                    </div>
+                    <div id="msg" class="bg-neutral-800 relative float-right mx-1 h-1/12 w-11/12 flex flex-col min-h-min min-w-min">
+                        <h2 class="font-sans font-normal text-sm text-slate-200 font">Saved Gradients :</h2>
+                    </div>
+                    <div id="container_right_show"
+                        class=" bg-neutral-800 relative float-right mx-1 h-1/3 w-11/12 inline-flex min-h-min min-w-min">
+                        @foreach ($gradients as $gradient)
+                            <div class=" relative float-right m-1 p-2 h-4/12 w-4/12 inline-flex min-h-min min-w-min rounded"
+                                style="{{ $gradient->title }}"><button id="show" type="button"
+                                    class="relative float-right m-1 h-full w-full inline-flex "
+                                    @@click="showGradient($event)" value="{{ $gradient->title }}"></button>
+                            </div>
+                        @endforeach
+                    </div>
+                    {{ $gradients->links() }}
                 </div>
             </div>
         </div>

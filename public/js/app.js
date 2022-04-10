@@ -5469,14 +5469,22 @@ var app = new Vue({
       Vue.prototype.$color1 = color1;
       color2 = this.$refs.color2.value;
       Vue.prototype.$color2 = color2;
-      direction = 'to top';
-      Vue.prototype.$direction = direction; //style = '';
+
+      if (typeof this.$direction === 'undefined') {
+        direction = 'to top';
+        Vue.prototype.$direction = direction;
+      }
+
+      if ($("#styleLinear").hasClass("selected")) {
+        style = 'linear-gradient';
+        Vue.prototype.$style = style;
+      }
 
       if (parm == 'styleRadial') {
         Vue.prototype.$style = 'radial-gradient';
       } else if (parm == 'styleLinear') {
         Vue.prototype.$style = 'linear-gradient';
-      } else if (parm != null) {
+      } else if (parm != null && this.$direction != 'empty') {
         Vue.prototype.$direction = parm;
       }
 
@@ -5575,9 +5583,12 @@ var app = new Vue({
         syntax = "background-image: " + this.$style + '(' + this.$direction + ',' + this.$color1 + ',' + this.$color2 + ')';
       }
 
-      console.log(syntax);
       this.$refs.screen.style = syntax;
       this.$refs.code.value = syntax;
+    },
+    showGradient: function showGradient(e) {
+      this.$refs.screen.style = e.target.value;
+      this.$refs.code.value = e.target.value;
     }
   }
 });

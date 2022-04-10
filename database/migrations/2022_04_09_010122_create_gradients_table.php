@@ -14,13 +14,12 @@ class CreateGradientsTable extends Migration
     public function up()
     {
         Schema::create('gradients', function (Blueprint $table) {
-            $table->string('id')->primary();
             $table->timestamps();
+            $table->string('title')->primary();
             $table->string('style');
-            $table->string('direction');
+            $table->string('direction')->nullable();
             $table->string('color1');
             $table->string('color2');
-            $table->string('format');
         });
     }
 
