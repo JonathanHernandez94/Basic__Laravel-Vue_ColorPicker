@@ -9,18 +9,37 @@ class GradientController extends Controller
 {
     public function show(Gradient $gradient)
     {
-        return view('home', compact('product'));
+        $gradients = Gradient::paginate(3);
+        return view('home', compact('gradients'));
     }
 
     public function store(Request $request)
     {
+        $title = $request->title;
+        if (strpos($title, " radial-gradient(") !== false) {
+            $style = substr($title, strpos($title, ': ') + 2, strpos($title, '(') - strpos($title, ': ') - 2);
+            $attrsU = substr($title, strpos($title, '(') + 1, strpos($title, ')') - strpos($title, ')') - 1);
+            $attrsO = explode(',', $attrsU);
+            $color1 = $attrsO[0];
+            $color2 = $attrsO[1];
+            $direction = null;
+        } else {
+            $style = substr($title, strpos($title, ': ') + 2, strpos($title, '(') - strpos($title, ': ') - 2);
+            $attrsU = substr($title, strpos($title, '(') + 1, strpos($title, ')') - strpos($title, ')') - 1);
+            $attrsO = explode(',', $attrsU);
+            $color1 = $attrsO[1];
+            $color2 = $attrsO[2];
+            $direction = $attrsO[0];
+        }
+
         $gradient = Gradient::firstOrCreate([
-            'id' => $request->id,
-            'style' => $request->style,
-            'color1' => $request->color1,
-            'color2' => $request->color2,
-            'format' => $request->format,
-            'direction' => $request->direction
+            'title' => $title,
+            'style' => $style,
+            'color1' => $color1,
+            'color2' => $color2,
+            'direction' => $direction
         ]);
+
+        return redirect('/');
     }
 }

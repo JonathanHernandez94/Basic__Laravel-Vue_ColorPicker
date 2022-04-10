@@ -9,7 +9,10 @@ class Gradient extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'title';
+    protected $keyType = 'string';
+    public $incrementing = false;
     protected $fillable = [
-        'id', 'style', 'direction', 'color1', 'color2', 'format'
+        'title', 'style', 'direction', 'color1', 'color2'
     ];
 }
