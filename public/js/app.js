@@ -5310,15 +5310,28 @@ var app = new Vue({
     code: Vue.prototype.$syntax
   },
   methods: {
-    myColor1: function myColor1(e) {
-      Vue.prototype.$color1 = e.target.value;
-      this.$refs.color1.value = e.target.value;
-      this.renderCode();
+    addEvents1: function addEvents1(e) {
+      input = document.getElementById("container_input_colors_upper");
+      text = document.getElementById("container_input_colors_upper_text");
+      input.addEventListener("input", function () {
+        input.value = e.target.value;
+        text.value = e.target.value;
+        Vue.prototype.$color1 = e.target.value;
+        this.$refs.color1.value = e.target.value;
+        this.renderCode();
+      }.bind(this), false);
     },
-    myColor2: function myColor2(e) {
-      Vue.prototype.$color2 = e.target.value;
-      this.$refs.color2.value = e.target.value;
-      this.renderCode();
+    addEvents2: function addEvents2(e) {
+      input = document.getElementById("container_input_colors_lower");
+      text = document.getElementById("container_input_colors_lower_text");
+      screen = document.getElementById("container_righ_screen");
+      input.addEventListener("input", function () {
+        input.value = e.target.value;
+        text.value = e.target.value;
+        Vue.prototype.$color2 = e.target.value;
+        this.$refs.color2.value = e.target.value;
+        this.renderCode();
+      }.bind(this), false);
     },
     hexToRgb: function hexToRgb() {
       $("#hex").removeClass("selected");
@@ -5465,10 +5478,13 @@ var app = new Vue({
       }
     },
     renderCode: function renderCode(parm) {
-      color1 = this.$refs.color1.value;
-      Vue.prototype.$color1 = color1;
-      color2 = this.$refs.color2.value;
-      Vue.prototype.$color2 = color2;
+      if (typeof this.$color1 === 'undefined') {
+        Vue.prototype.$color1 = this.$refs.color1.value;
+      }
+
+      if (typeof this.$color2 === 'undefined') {
+        Vue.prototype.$color2 = this.$refs.color2.value;
+      }
 
       if (typeof this.$direction === 'undefined') {
         direction = 'to top';
