@@ -71,13 +71,13 @@
                             <div id="container_input_colors_upper" class="flex flex-row min-h-min min-w-min">
                                 <input id="container_input_colors_upper_color" type="color" name="colorUpper"
                                     @@mouseover="addEvents1($event)" value="#00fbff" />
-                                <input id="container_input_colors_upper_text" type="text" name="colorUpperText"
+                                <input id="container_input_colors_upper_text" type="text"  readonly="readonly" name="colorUpperText"
                                     value="#05f1f5" class="button-2" ref="color1" />
                             </div>
                             <div id="container_input_colors_lower" class="flex flex-row min-h-min min-w-min">
                                 <input id="container_input_colors_lower_color" type="color" name="colorLower"
                                     @@mouseover="addEvents2($event)" value="#e1ffe0" />
-                                <input id="container_input_colors_lower_text" type="text" name="colorLowerText"
+                                <input id="container_input_colors_lower_text" type="text"  readonly="readonly" name="colorLowerText"
                                     value="#e2fee1" class="button-2" ref="color2" />
                             </div>
                         </span>
@@ -98,7 +98,7 @@
                     </div>
                     <div id="container_right_output"
                         class=" bg-neutral-800 relative float-right mx-1 h-1/3 w-11/12 flex flex-col min-h-min min-w-min">
-                        <input id="container_right_output_input" type="text"
+                        <input id="container_right_output_input" type="text" readonly="readonly"
                             value="background-image: linear-gradient(to bottom,#05f1f5,#e2fee1)"
                             class=" rounded w-full h-1/5 my-3 relative p-3 buttons font-sans font-medium text-slate-100 bg-transparent border-2 border-slate-100"
                             name="title" ref="code" />
