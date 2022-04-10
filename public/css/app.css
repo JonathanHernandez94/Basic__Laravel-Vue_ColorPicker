@@ -483,8 +483,14 @@ Ensure the default browser behavior of the `hidden` attribute.
   margin-top: 0.75rem;
   margin-bottom: 0.75rem;
 }
+.inline-block {
+  display: inline-block;
+}
 .flex {
   display: flex;
+}
+.hidden {
+  display: none;
 }
 .h-full {
   height: 100%;
@@ -539,10 +545,6 @@ Ensure the default browser behavior of the `hidden` attribute.
 .bg-neutral-800 {
   --tw-bg-opacity: 1;
   background-color: rgb(38 38 38 / var(--tw-bg-opacity));
-}
-.bg-blue-800 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(30 64 175 / var(--tw-bg-opacity));
 }
 .bg-transparent {
   background-color: transparent;
@@ -621,6 +623,11 @@ Ensure the default browser behavior of the `hidden` attribute.
   color: rgb(55, 55, 55)
 }
 
+.selected {
+  background-color: #f7fafa;
+  color: rgb(55, 55, 55)
+}
+
 .button-1:focus {
   color: rgb(55, 55, 55);
   background-color: #f7fafa;
@@ -652,6 +659,4 @@ Ensure the default browser behavior of the `hidden` attribute.
   width: 100px;
 }
 
-[v-cloak] {
-  display: none;
-}
+

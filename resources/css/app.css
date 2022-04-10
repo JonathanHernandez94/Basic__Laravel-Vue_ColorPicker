@@ -34,6 +34,11 @@
   color: rgb(55, 55, 55)
 }
 
+.selected {
+  background-color: #f7fafa;
+  color: rgb(55, 55, 55)
+}
+
 .button-1:focus {
   color: rgb(55, 55, 55);
   background-color: #f7fafa;
@@ -63,6 +68,3 @@
   width: 100px;
 }
 
-[v-cloak] {
-  display: none;
-}
