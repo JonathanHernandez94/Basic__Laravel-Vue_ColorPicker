@@ -26,41 +26,24 @@
                 <div id="container_input"
                     class=" bg-neutral-800  w-5/12 h-3/4  p-8 float-left flex flex-col min-h-min min-w-min ">
 
-                    <div id="container_input_style" class=" py-4 flex flex-col min-h-min min-w-min">
+                    <div id="container_input_shape" class=" py-4 flex flex-col min-h-min min-w-min">
                         <span class=" buttons font-sans font-medium text-slate-100">
                             <label for="conatiner_input_style"> STYLE: </label>
                             <br>
-                            <button id="styleLinear" :class="{'selected': isSelected}" class="button-1" @@click="renderStyleLinear"
-                                type="button">Linear</button>
-                            <button id="styleRadial":class="{'selected': isSelected}" class="button-1" @@click="renderStyleRadial"
-                                type="button">Radial</button>
+                            <button id="styleLinear" :class="{ 'selected': isSelectedLinear }" class="button-1"
+                                @@click="renderShapeLinear(), isCenterButtomVisible=false" type="button">Linear</button>
+                            <button id="styleRadial" :class="{ 'selected': isSelectedRadial }" class="button-1"
+                                @@click="renderShapeRadial(); isCenterButtomVisible=true" type="button">Radial</button>
                         </span>
                     </div>
                     <div id="container_input_direction" class=" py-1 flex flex-col min-h-min min-w-min">
                         <span class=" buttons font-sans font-medium text-slate-100">
                             <label for="container_input_direction"> DIRECTION:</label>
                             <br>
-                            <div id="container_input_direction_upper" class="   min-w-min">
-                                <button id="top" class=" button-1 m-1" @@click="renderDir($event)"
-                                    type="button">Top</button>
-                                <button id="topRight" class=" button-1 m-1" @@click="renderDir($event)"
-                                    type="button">Top right</button>
-                                <button id="right" class=" button-1 m-1" @@click="renderDir($event)"
-                                    type="button">Right</button>
-                                <button id="bottomRight" class=" button-1 m-1 " @@click="renderDir($event)"
-                                    type="button">Bottom right</button>
+                            <div id="container_input_direction" class="   min-w-min">
+                                <buttons-dir></buttons-dir>
                                 <button id="center" class="button-1 m-1" @@click="renderDir($event)" type="button"
-                                    style="display: none">Center</button>
-                            </div>
-                            <div id="container_input_direction_lower" class="  ">
-                                <button id="bottom" class=" button-1 m-1 selected" @@click="renderDir($event)"
-                                    type="button">Bottom</button>
-                                <button id="bottomLeft" class=" button-1 m-1" @@click="renderDir($event)"
-                                    type="button">Bottom left</button>
-                                <button id="left" class=" button-1 m-1" @@click="renderDir($event)"
-                                    type="button">Left</button>
-                                <button id="topLeft" class=" button-1 m-1" @@click="renderDir($event)"
-                                    type="button">Top Left</button>
+                                    v-show='isCenterButtomVisible'>Center</button>
                             </div>
                         </span>
                     </div>
@@ -72,13 +55,13 @@
                                 <input id="container_input_colors_upper_color" type="color" name="colorUpper"
                                     @@mouseover="addEvents1($event)" value="#00fbff" />
                                 <input id="container_input_colors_upper_text" type="text" readonly="readonly"
-                                    name="colorUpperText" value="#05f1f5" class="button-2" ref="color1" />
+                                    name="colorUpperText" :value="color1" class="button-2" ref="color1" />
                             </div>
                             <div id="container_input_colors_lower" class="flex flex-row min-h-min min-w-min">
                                 <input id="container_input_colors_lower_color" type="color" name="colorLower"
                                     @@mouseover="addEvents2($event)" value="#e1ffe0" />
                                 <input id="container_input_colors_lower_text" type="text" readonly="readonly"
-                                    name="colorLowerText" value="#e2fee1" class="button-2" ref="color2" />
+                                    name="colorLowerText" :value="color2" class="button-2" ref="color2" />
                             </div>
                         </span>
                     </div>
@@ -94,7 +77,7 @@
                 <div id="container_right"
                     class=" relative h-3/4 w-7/12 float-right bg-neutral-800 flex flex-col min-h-min min-w-min ">
                     <div id="container_righ_screen" class="rounded relative float-right mx-1 h-2/3 w-11/12" ref="screen"
-                        style="background-image: linear-gradient(to bottom,#05f1f5,#e2fee1)">
+                        :style="renderedStyle">
                     </div>
                     <div id="container_right_output"
                         class=" bg-neutral-800 relative float-right mx-1 h-1/3 w-11/12 flex flex-col min-h-min min-w-min">
@@ -136,13 +119,157 @@
     ------------------------------------------------------------------------------------------------------------------------
     ------------------------------------------------------------------------------------------------------------------------>
     <script>
+        Vue.component('buttons-dir', {
+            template: `<div>
+            <button-dir v-for="dir in dirs">@{{ dir.name }}</button-dir>
+            </div>
+            `,
+            data() {
+                return {
+                    dirs: [{
+                            name: 'Top',
+                            // pressed: '',
+                            value: 'top'
+
+                        },
+                        {
+                            name: 'TopRight',
+                            // pressed: '',
+                            value: 'topRight'
+
+                        },
+                        {
+                            name: 'Right',
+                            // pressed: '',
+                            value: 'right'
+
+                        },
+                        {
+                            name: 'BottomRight',
+                            // pressed: '',
+                            value: 'bottomRight'
+
+                        },
+                        {
+                            name: 'Bottom',
+                            // pressed: '',
+                            value: 'bottom'
+
+                        },
+                        {
+                            name: 'BottomLeft',
+                            // pressed: '',
+                            value: 'bottomLeft'
+
+                        },
+                        {
+                            name: 'Left',
+                            // pressed: '',
+                            value: 'left'
+
+                        },
+                        {
+                            name: 'Topleft',
+                            // pressed: '',
+                            value: 'topLeft'
+
+                        },
+                    ]
+                };
+            }
+        });
+        Vue.component('button-dir', {
+            template: `
+            <button :class="{selected}:" class=" button-1 m-1" @@click="renderDir($event)"
+                                    type="button"><slot></slot></button>
+            `
+        });
         var app = new Vue({
             el: '#app',
             data: {
-                message: '',
-                isSelected:''
-            },
+                isCenterButtomVisible: '',
+                isSelectedRadial: '',
+                isSelectedLinear: '',
+                prefix: '',
+                shape: 'linear-gradient',
+                dir: 'to bottom',
+                color1: '#05f1f5',
+                color2: '#e2fee1',
 
+            },
+            computed: {
+                renderedStyle() {
+                    //Convert from one shape to another on the fly
+                    if (this.shape == 'radial-gradient') {
+                        switch (this.dir) {
+                            case 'to top':
+                                this.dir = 'center top'
+                                break;
+                            case 'to top right':
+                                this.dir = 'top right'
+                                break;
+                            case 'to right':
+                                this.dir = 'right center'
+                                break;
+                            case 'to bottom right':
+                                this.dir = 'bottom right'
+                                break;
+                            case 'to bottom':
+                                this.dir = 'center bottom'
+                                break;
+                            case 'to top left':
+                                this.dir = 'top left'
+                                break;
+                            case 'to left':
+                                this.dir = 'left center'
+                                break;
+                            case 'to bottom left':
+                                this.dir = 'bottom left'
+                                break;
+                            case 'center':
+                                this.dir = 'center top';
+                                prefix = '';
+                                break;
+                            default:
+                                break;
+                        }
+                    } else {
+                        switch (this.dir) {
+                            case 'center top':
+                                this.dir = 'to top'
+                                break;
+                            case 'top right':
+                                this.dir = 'to top right'
+                                break;
+                            case 'right center':
+                                this.dir = 'to right'
+                                break;
+                            case 'bottom right':
+                                this.dir = 'to bottom right'
+                                break;
+                            case 'center bottom':
+                                this.dir = 'to bottom'
+                                break;
+                            case 'top left':
+                                this.dir = 'to top left'
+                                break;
+                            case 'left center':
+                                this.dir = 'to left'
+                                break;
+                            case 'bottom left':
+                                this.dir = 'to bottom left'
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+
+                    //Final style
+                    (this.shape == 'linear-gradient') ? this.prefix = '': this.prefix = '-webkit-';
+                    return 'background-image: ' + this.prefix + this.shape + '(' + this.dir + ',' + this.color1 +
+                        ',' + this.color2 + ')';
+                }
+            },
             methods: {
                 addEvents1(e) {
                     input = document.getElementById("container_input_colors_upper");
@@ -241,33 +368,26 @@
                     Vue.prototype.$color2 = this.$refs.color2.value;
                     this.renderCode();
                 },
-
-                renderStyleLinear() {
-                    // $("#styleLinear").removeClass("selected");
-                    // $("#styleRadial").removeClass("selected");
-                    // $("#styleLinear").addClass("selected");
-                    
-                    this.isSelected = 'selected';
-                    console.log('IM here');
-                   // this.renderCode('styleLinear');
+                renderShapeLinear() {
+                    this.isSelectedLinear = true;
+                    this.isSelectedRadial = false;
+                    this.shape = 'linear-gradient';
                 },
-                renderStyleRadial() {
-                    console.log('IM here');
-                    $("#styleLinear").removeClass("selected");
-                    $("#styleRadial").removeClass("selected");
-                    $("#styleRadial").addClass("selected");
-                    //this.renderCode('styleRadial');
+                renderShapeRadial() {
+                    this.isSelectedRadial = true;
+                    this.isSelectedLinear = false;
+                    this.shape = 'radial-gradient';
                 },
                 renderDir(e) {
-                    $("#top").removeClass("selected");
-                    $("#topRight").removeClass("selected");
-                    $("#right").removeClass("selected");
-                    $("#bottomRight").removeClass("selected");
-                    $("#bottom").removeClass("selected");
-                    $("#bottomLeft").removeClass("selected");
-                    $("#left").removeClass("selected");
-                    $("#topLeft").removeClass("selected");
-                    $("#center").removeClass("selected");
+                    // $("#top").removeClass("selected");
+                    // $("#topRight").removeClass("selected");
+                    // $("#right").removeClass("selected");
+                    // $("#bottomRight").removeClass("selected");
+                    // $("#bottom").removeClass("selected");
+                    // $("#bottomLeft").removeClass("selected");
+                    // $("#left").removeClass("selected");
+                    // $("#topLeft").removeClass("selected");
+                    // $("#center").removeClass("selected");
 
                     switch (e.currentTarget.id) {
                         case 'top':
@@ -322,7 +442,7 @@
 
                     if (typeof(this.$direction) === 'undefined') {
                         direction = 'to top';
-                        Vue.prototype.$direction = direction
+                        this.dir = direction
                     }
 
                     if ($("#styleLinear").hasClass("selected")) {
@@ -334,73 +454,73 @@
                     } else if (parm == 'styleLinear') {
                         Vue.prototype.$style = 'linear-gradient';
                     } else if (parm != null && this.$direction != 'empty') {
-                        Vue.prototype.$direction = parm;
+                        this.dir = parm;
                     }
 
-                    if (Vue.prototype.$style == 'radial-gradient') {
-                        prefix = '-webkit-'
-                        switch (this.$direction) {
-                            case 'to top':
-                                Vue.prototype.$direction = 'center top'
-                                break;
-                            case 'to top right':
-                                Vue.prototype.$direction = 'top right'
-                                break;
-                            case 'to right':
-                                Vue.prototype.$direction = 'right center'
-                                break;
-                            case 'to bottom right':
-                                Vue.prototype.$direction = 'bottom right'
-                                break;
-                            case 'to bottom':
-                                Vue.prototype.$direction = 'center bottom'
-                                break;
-                            case 'to top left':
-                                Vue.prototype.$direction = 'top left'
-                                break;
-                            case 'to left':
-                                Vue.prototype.$direction = 'left center'
-                                break;
-                            case 'to bottom left':
-                                Vue.prototype.$direction = 'bottom left'
-                                break;
-                            case 'center':
-                                Vue.prototype.$direction = 'center top';
-                                prefix = '';
-                                break;
-                            default:
-                                break;
-                        }
-                    } else if (Vue.prototype.$style == 'linear-gradient') {
-                        switch (this.$direction) {
-                            case 'center top':
-                                Vue.prototype.$direction = 'to top'
-                                break;
-                            case 'top right':
-                                Vue.prototype.$direction = 'to top right'
-                                break;
-                            case 'right center':
-                                Vue.prototype.$direction = 'to right'
-                                break;
-                            case 'bottom right':
-                                Vue.prototype.$direction = 'to bottom right'
-                                break;
-                            case 'center bottom':
-                                Vue.prototype.$direction = 'to bottom'
-                                break;
-                            case 'top left':
-                                Vue.prototype.$direction = 'to top left'
-                                break;
-                            case 'left center':
-                                Vue.prototype.$direction = 'to left'
-                                break;
-                            case 'bottom left':
-                                Vue.prototype.$direction = 'to bottom left'
-                                break;
-                            default:
-                                break;
-                        }
-                    }
+                    // if (Vue.prototype.$style == 'radial-gradient') {
+                    //     prefix = '-webkit-'
+                    //     switch (this.$direction) {
+                    //         case 'to top':
+                    //             this.dir = 'center top'
+                    //             break;
+                    //         case 'to top right':
+                    //             this.dir = 'top right'
+                    //             break;
+                    //         case 'to right':
+                    //             this.dir = 'right center'
+                    //             break;
+                    //         case 'to bottom right':
+                    //             this.dir = 'bottom right'
+                    //             break;
+                    //         case 'to bottom':
+                    //             this.dir = 'center bottom'
+                    //             break;
+                    //         case 'to top left':
+                    //             this.dir = 'top left'
+                    //             break;
+                    //         case 'to left':
+                    //             this.dir = 'left center'
+                    //             break;
+                    //         case 'to bottom left':
+                    //             this.dir = 'bottom left'
+                    //             break;
+                    //         case 'center':
+                    //             this.dir = 'center top';
+                    //             prefix = '';
+                    //             break;
+                    //         default:
+                    //             break;
+                    //     }
+                    // } else if (Vue.prototype.$style == 'linear-gradient') {
+                    //     switch (this.$direction) {
+                    //         case 'center top':
+                    //             this.dir = 'to top'
+                    //             break;
+                    //         case 'top right':
+                    //             this.dir = 'to top right'
+                    //             break;
+                    //         case 'right center':
+                    //             this.dir = 'to right'
+                    //             break;
+                    //         case 'bottom right':
+                    //             this.dir = 'to bottom right'
+                    //             break;
+                    //         case 'center bottom':
+                    //             this.dir = 'to bottom'
+                    //             break;
+                    //         case 'top left':
+                    //             this.dir = 'to top left'
+                    //             break;
+                    //         case 'left center':
+                    //             this.dir = 'to left'
+                    //             break;
+                    //         case 'bottom left':
+                    //             this.dir = 'to bottom left'
+                    //             break;
+                    //         default:
+                    //             break;
+                    //     }
+                    // }
                     if (this.$style == 'radial-gradient' && prefix != '') {
                         $("#center").css("display", "inline-block");
                         syntax = "background-image: " + prefix + this.$style + '(' + this.$direction + ',' + this
@@ -426,7 +546,6 @@
                     this.$refs.code.value = e.target.value;
                 }
             }
-
 
         });
     </script>
