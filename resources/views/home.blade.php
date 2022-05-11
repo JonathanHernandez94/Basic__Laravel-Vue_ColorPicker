@@ -119,59 +119,67 @@
     ------------------------------------------------------------------------------------------------------------------------
     ------------------------------------------------------------------------------------------------------------------------>
     <script>
+        window.Event = new Vue();
         Vue.component('buttons-dir', {
             template: `<div>
-            <button-dir v-for="dir in dirs">@{{ dir.name }}</button-dir>
+            <button-dir :pressed="changePressed" v-for="dir in dirs" @@buttonPressed="clearButtons">@{{ dir.name }}</button-dir>
             </div>
             `,
+            methods: {
+                clearButtons(e) {
+                    // console.log(this.dirs[0]);
+                    this.dirs.forEach(dir => {
+                        dir.changePressed = false;
+                    });
+                }
+            },
             data() {
                 return {
                     dirs: [{
                             name: 'Top',
-                            // pressed: '',
-                            value: 'top'
-
+                            value: 'top',
+                            changePressed: '',
                         },
                         {
-                            name: 'TopRight',
-                            // pressed: '',
-                            value: 'topRight'
+                            name: 'Top Right',
+                            value: 'topRight',
+                            changePressed: '',
 
                         },
                         {
                             name: 'Right',
-                            // pressed: '',
-                            value: 'right'
+                            value: 'right',
+                            changePressed: '',
 
                         },
                         {
-                            name: 'BottomRight',
-                            // pressed: '',
-                            value: 'bottomRight'
+                            name: 'Bottom Right',
+                            value: 'bottomRight',
+                            changePressed: '',
 
                         },
                         {
                             name: 'Bottom',
-                            // pressed: '',
-                            value: 'bottom'
+                            value: 'bottom',
+                            changePressed: '',
 
                         },
                         {
-                            name: 'BottomLeft',
-                            // pressed: '',
-                            value: 'bottomLeft'
+                            name: 'Bottom Left',
+                            value: 'bottomLeft',
+                            changePressed: '',
 
                         },
                         {
                             name: 'Left',
-                            // pressed: '',
-                            value: 'left'
+                            value: 'left',
+                            changePressed: '',
 
                         },
                         {
-                            name: 'Topleft',
-                            // pressed: '',
-                            value: 'topLeft'
+                            name: 'Top left',
+                            value: 'topLeft',
+                            changePressed: '',
 
                         },
                     ]
@@ -179,10 +187,21 @@
             }
         });
         Vue.component('button-dir', {
-            template: `
-            <button :class="{selected}:" class=" button-1 m-1" @@click="renderDir($event)"
+            props: ['pressed'],
+            template: ` 
+            <button :class="{selected:pressed}" class=" button-1 m-1" @@click="pressed=true;wasPressed()" 
                                     type="button"><slot></slot></button>
-            `
+            `,
+            methods: {
+                wasPressed() {
+                    this.$emit('buttonPressed', this.pressed);
+                }
+            },
+            // data() {
+            //     return {
+            //         pressed: this.pressed
+            //     }
+            // }
         });
         var app = new Vue({
             el: '#app',
