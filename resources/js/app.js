@@ -109,7 +109,6 @@ methods: {
         }
         Vue.prototype.$color1 = this.$refs.color1.value;
         Vue.prototype.$color2 = this.$refs.color2.value;
-        this.renderCode();
     },
 
     renderStyle(e) {
