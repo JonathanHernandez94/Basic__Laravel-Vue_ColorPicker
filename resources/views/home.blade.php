@@ -31,9 +31,11 @@
                             <label for="conatiner_input_style"> STYLE: </label>
                             <br>
                             <button id="styleLinear" :class="{ 'selected': isSelectedLinear }" class="button-1"
-                                @@click="renderShapeLinear(), isCenterButtonVisible=false" type="button">Linear</button>
+                                @@click="loadedStyle = null ,renderShapeLinear(), isCenterButtonVisible=false"
+                                type="button">Linear</button>
                             <button id="styleRadial" :class="{ 'selected': isSelectedRadial }" class="button-1"
-                                @@click="renderShapeRadial(); isCenterButtonVisible=true" type="button">Radial</button>
+                                @@click="loadedStyle = null ,renderShapeRadial(); isCenterButtonVisible=true"
+                                type="button">Radial</button>
                         </span>
                     </div>
                     <div id="container_input_direction" class=" py-1 flex flex-col min-h-min min-w-min">
@@ -51,15 +53,15 @@
                             <br>
                             <div id="container_input_colors_upper" class="flex flex-row min-h-min min-w-min">
                                 <input id="container_input_colors_upper_color" type="color" name="colorUpper"
-                                    v-model="color1" />
+                                    v-model="color1" @@click="loadedStyle=null;colorTextRgb1=null" />
                                 <input id="container_input_colors_upper_text" type="text" readonly="readonly"
-                                    name="colorUpperText" :value="color1" class="button-2" />
+                                    name="colorUpperText" :value="pickedColor1()" class="button-2" />
                             </div>
                             <div id="container_input_colors_lower" class="flex flex-row min-h-min min-w-min">
                                 <input id="container_input_colors_lower_color" type="color" name="colorLower"
-                                    v-model="color2" />
+                                    v-model="color2" @@click="loadedStyle=null;colorTextRgb2=null" />
                                 <input id="container_input_colors_lower_text" type="text" readonly="readonly"
-                                    name="colorLowerText" :value="color2" class="button-2" />
+                                    name="colorLowerText" :value="pickedColor2()" class="button-2" />
                             </div>
                         </span>
                     </div>
@@ -68,9 +70,9 @@
                             <label for="container_input_format">COLOR FORMAT:</label>
                             <br>
                             <button id="hex" :class="{ 'selected': isSelectedHex }" class=" button-1"
-                                @@click="rgbToHex" type="button">Hex</button>
+                                @@click="loadedStyle = null ,rgbToHex()" type="button">Hex</button>
                             <button id="rgb" :class="{ 'selected': isSelectedRGB }" class=" button-1"
-                                @@click="hexToRgb" type="button">Rgb</button>
+                                @@click="loadedStyle = null ,hexToRgb()" type="button">Rgb</button>
                         </span>
                     </div>
                 </div>
@@ -102,7 +104,7 @@
                             <div class=" relative float-right m-1 p-2 h-4/12 w-4/12 inline-flex min-h-min min-w-min rounded"
                                 style="{{ $gradient->title }}"><button id="show" type="button"
                                     class="relative float-right m-1 h-full w-full inline-flex "
-                                    @@click="showGradient($event)" value="{{ $gradient->title }}"></button>
+                                    @@click="showGradient({{ $gradient }})"></button>
                             </div>
                         @endforeach
                     </div>
@@ -111,7 +113,6 @@
             </div>
         </div>
     </form>
-
     <script src="https://unpkg.com/vue@2.1.3/dist/vue.js"></script>
     <!----------------------------------------------------------------------------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -120,7 +121,7 @@
     <script>
         Vue.component('buttons-dir', {
             template: `<div>
-            <button-dir v-for="dir in dirs" @@buttonPressed.once="checkButtons">@{{ dir.name }}</button-dir>
+            <button-dir v-for="dir in dirs" @@buttonPressed="checkButtons">@{{ dir.name }}</button-dir>
             <button-dir-center @@buttonPressed="checkButtons">@{{ center.name }}</button-dir-center>
             </div>
             `,
@@ -206,8 +207,9 @@
             `,
             methods: {
                 wasPressed() {
+                    app.loadedStyle = null;
                     this.$emit('buttonPressed', this);
-                }
+                },
             },
             data() {
                 return {
@@ -218,7 +220,7 @@
         Vue.component('button-dir-center', {
             template: `
             <button id="center" :class="{selected:isPressed}" class="button-1 m-1" @@click="isPressed=true;wasPressed()" type="button"
-                                    v-show='isCenterButtonVisible'><slot></slot></button>
+                                    v-show='checkCenterButtonVisible'><slot></slot></button>
             `,
             methods: {
                 wasPressed() {
@@ -233,7 +235,7 @@
             },
             computed: {
                 checkCenterButtonVisible() {
-                    this.isCenterButtonVisible = app.isCenterButtonVisible;
+                    return this.$parent.$parent.isCenterButtonVisible == true ? true : false;
                 }
             }
         });
@@ -251,11 +253,15 @@
                 dir: 'to bottom',
                 color1: '#00fbff',
                 color2: '#e1ffe0',
-                codeShowed: ''
+                codeShowed: '',
+                loadedStyle: null,
+                colorTextRgb1: null,
+                colorTextRgb2: null,
+                colorTextHex1: null,
+                colorTextHex2: null
             },
             computed: {
-                renderedStyle(defaultCode = null) {
-                    //Convert from one shape to another on the fly
+                renderedStyle() {
                     if (this.shape == 'radial-gradient') {
                         switch (this.dir) {
                             case 'to top':
@@ -282,9 +288,8 @@
                             case 'to bottom left':
                                 this.dir = 'bottom left'
                                 break;
-                            case 'at center center':
-                                this.dir = 'center top';
-                                prefix = '';
+                            case 'center':
+                                this.dir = 'center';
                                 break;
                             default:
                                 break;
@@ -323,76 +328,48 @@
                     (this.shape == 'linear-gradient') ? this.prefix = '': this.prefix = '-webkit-';
                     code = 'background-image: ' + this.prefix + this.shape + '(' + this.dir + ',' + this.color1 +
                         ',' + this.color2 + ')';
-                    this.codeShowed = code;
-                    // return (typeof defaultCode !== null) ? defaultCode : code;
-                    return code;
-                }
+
+                    this.loadedStyle ? this.codeShowed = this.loadedStyle : this.codeShowed = code;
+                    return this.loadedStyle !== null ? this.loadedStyle : code;
+                },
             },
             methods: {
                 hexToRgb() {
-                    // this.isSelectedHex = false;
-                    // this.isSelectedRGB = true;
-                    if (this.color1[0] !== '#' && this.color2[0] !== '#') {
-                        return;
-                    } else if (this.color1[0] == '#' && this.color2[0] !== '#') {
-                        this.color1 = (['0x' + this.color1[1] + this.color1[2] |
-                            0, '0x' + this.color1[3] + this.color1[4] | 0, '0x' +
-                            this.color1[5] + this.color1[6] | 0
-                        ]);
-                    } else if (this.color1[0] !== '#' && this.color2[0] == '#') {
-                        this.color2 = (['0x' + this.color2[1] + this.color2[2] |
-                            0, '0x' + this.color2[3] + this.color2[4] | 0, '0x' +
-                            this.color2[5] + this.color2[6] | 0
-                        ]);
-                    } else {
-                        this.color1 = (['0x' + this.color1[1] + this.color1[2] |
-                            0, '0x' + this.color1[3] + this.color1[4] | 0, '0x' +
-                            this.color1[5] + this.color1[6] | 0
-                        ]);
-                        this.color2 = (['0x' + this.color2[1] + this.color2[2] |
-                            0, '0x' + this.color2[3] + this.color2[4] | 0, '0x' +
-                            this.color2[5] + this.color2[6] | 0
-                        ]);
+                    this.isSelectedHex = false;
+                    this.isSelectedRGB = true;
+
+                    if (this.color1[0] == '#') {
+                        result1 = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(this.color1);
+                        r = parseInt(result1[1], 16);
+                        g = parseInt(result1[2], 16);
+                        b = parseInt(result1[3], 16);
+                        this.colorTextRgb1 = r + ',' + g + ',' + b;
                     }
-                    // this.$color1 = "rgb(" + this.color1 + ")";
-                    // this.$color2 = "rgb(" + this.color2 + ")";
+                    if (this.color2[0] == '#') {
+                        result2 = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(this.color2);
+                        r = parseInt(result2[1], 16);
+                        g = parseInt(result2[2], 16);
+                        b = parseInt(result2[3], 16);
+                        this.colorTextRgb2 = r + ',' + g + ',' + b;
+                    }
                 },
                 rgbToHex() {
-                    // this.isSelectedHex = true;
-                    // this.isSelectedRGB = false;
-                    if (this.color1[0] == '#' && this.color2[0] == '#') {
-                        return;
-                    } else if (this.color1[0] !== '#' && this.color2[0] == '#') {
-                        colors1 = this.color1.split(",");
-                        red1 = colors1[0];
-                        green1 = colors1[1];
-                        blue1 = colors1[2];
-                        const rgb1 = (red1 << 16) | (green1 << 8) | (blue1 << 0);
-                        this.color1 = '#' + (0x1000000 + rgb1).toString(16).slice(1);
-                    } else if (this.color1[0] == '#' && this.color2[0] !== '#') {
-                        colors2 = this.color2.split(",");
-                        red2 = colors2[0];
-                        green2 = colors2[1];
-                        blue2 = colors2[2];
-                        const rgb2 = (red2 << 16) | (green2 << 8) | (blue2 << 0);
-                        this.color2 = '#' + (0x1000000 + rgb2).toString(16).slice(1);
-                    } else {
-                        colors1 = this.color1.split(",");
-                        red1 = colors1[0];
-                        green1 = colors1[1];
-                        blue1 = colors1[2];
-                        const rgb1 = (red1 << 16) | (green1 << 8) | (blue1 << 0);
-                        this.color1 = '#' + (0x1000000 + rgb1).toString(16).slice(1);
-
-                        colors2 = this.color2.split(",");
-                        red2 = colors2[0];
-                        green2 = colors2[1];
-                        blue2 = colors2[2];
-                        const rgb2 = (red2 << 16) | (green2 << 8) | (blue2 << 0);
-                        this.color2 = '#' + (0x1000000 + rgb2).toString(16).slice(1);
+                    this.isSelectedHex = true;
+                    this.isSelectedRGB = false;
+                    if (this.colorTextRgb1 !== null) {
+                        this.colorTextHex1 = this.color1;
+                        this.colorTextRgb1 = null;
                     }
-                    Vue.prototype.$color1 = this.color1;
-                    Vue.prototype.$color2 = this.color2;
+                    if (this.colorTextRgb2 !== null) {
+                        this.colorTextHex2 = this.color2;
+                        this.colorTextRgb2 = null;
+                    }
+                },
+                pickedColor1() {
+                    return this.colorTextRgb1 == null ? this.color1 : this.colorTextRgb1;
+                },
+                pickedColor2() {
+                    return this.colorTextRgb2 == null ? this.color2 : this.colorTextRgb2;
                 },
                 renderShapeLinear() {
                     this.isSelectedLinear = true;
@@ -404,9 +381,8 @@
                     this.isSelectedLinear = false;
                     this.shape = 'radial-gradient';
                 },
-                showGradient(e) {
-                    this.$refs.screen.style = e.target.value;
-                    this.codeShowed = e.target.value;
+                showGradient(gradient) {
+                    this.loadedStyle = gradient.title;
                 }
             }
         });
